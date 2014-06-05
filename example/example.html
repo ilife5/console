@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="http://qunarzz.com/console/prd/main.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+    function log() {
+        console.log('123', 456, null, undefined, false, function() {}, {});
+    }
+    function info() {
+        console.info('123', 456, null, undefined, false, function() {}, {});
+    }
+    function warn() {
+        console.warn('123', 456, null, undefined, false, function() {}, {});
+    }
+    function debug() {
+        console.debug('123', 456, null, undefined, false, function() {}, {});
+    }
+    function error() {
+        console.error('error');
+    }
+    var old = window.onload;
+    window.onload = function() {
+        old();
+        log();
+        info();
+        warn();
+        debug();
+        error();
+    }
+</script>
+</body>
+</html>
