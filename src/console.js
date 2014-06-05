@@ -5,10 +5,13 @@ function createElement(name) {
     return document.createElement(name);
 }
 
+function noop() {}
+
 function parseHTML() {}
 
-var root, group, fragment, currentFragment, currentGroup, toggleStatus, singleLogs, traceLogs;
+var root, group, fragment, currentFragment, currentGroup, toggleStatus, singleLogs, traceLogs, methods;
 
+methods = ['log', 'info', 'error', 'warn', 'dir', 'count', 'group', 'groupEnd', 'time', 'timeEnd', 'trace', 'clear', 'debug'];
 singleLogs = ['log', 'warn', 'debug', 'info'];
 traceLogs = ['error', 'trace'];
 
@@ -104,46 +107,35 @@ var console = {
     clear: function() {}
 };
 
-//只需要单行输出
-singleLogs.forEach(function(name) {
-    console[name] = function() {
-        var context;
-        try{
-            a.b.c()
-        }catch(e) {
-            context = e.stack;
-        }
-        createSingleLog.apply(null, [name].concat(arguments).concat([context.split('\n').map(function(item) {
-            return item.trim();
-        })]));
-    };
-});
+function createMethod(name){
 
-//输出堆栈信息
-traceLogs.forEach(function(name, i) {
-    console[name] = function() {
-        var context;
-        try{
-            a.b.c()
-        }catch(e) {
-            context = e.stack;
-        }
-        createTraceLog.apply(null, [name].concat(arguments).concat([context.split('\n').map(function(item) {
-            return item.trim();
-        })]));
-    };
-});
+    var method;
 
-console.dir = function() {
-    var context;
-    try{
-        a.b.c()
-    }catch(e) {
-        context = e.stack;
+    if(name === 'dir') {
+        method = createDirLog;
+    } else if(singleLogs.indexOf(name) > -1 ) {
+        method = createSingleLog;
+    } else if(traceLogs.indexOf(name) > -1) {
+        method = createTraceLog;
+    } else {
+        method = noop;
     }
-    createDirLog.apply(null, ['dir'].concat(arguments).concat([context.split('\n').map(function(item) {
-        return item.trim();
-    })]));
-};
+
+    return function()  {
+        var context;
+        try{
+            a.b.c()
+        }catch(e) {
+            context = e.stack;
+        }
+        method.apply(null, [name].concat(arguments).concat([context.split('\n').map(function(item) {
+            return item.trim();
+        })]));
+    };
+}
+
+methods.forEach(function(name) {
+    console[name] = createMethod(name);
+});
 
 module.exports = console;
