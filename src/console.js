@@ -1,6 +1,5 @@
 require('./polyfill');
 
-var _console = window.console;
 function createElement(name) {
     return document.createElement(name);
 }
@@ -9,13 +8,12 @@ function noop() {}
 
 function parseHTML() {}
 
-var root, group, fragment, currentFragment, currentGroup, toggleStatus, singleLogs, traceLogs, methods;
+var console, root, group, fragment, currentFragment, currentGroup, toggleStatus, singleLogs, traceLogs, methods;
 
+console = {};
 methods = ['log', 'info', 'error', 'warn', 'dir', 'count', 'group', 'groupEnd', 'time', 'timeEnd', 'trace', 'clear', 'debug'];
 singleLogs = ['log', 'warn', 'debug', 'info'];
 traceLogs = ['error', 'trace'];
-
-
 
 //初始化面板
 function init() {
@@ -89,23 +87,19 @@ function createTraceLog() {
 function createDirLog() {
 
     var parent = createSingleLog.apply(null, arguments),
+        obj = arguments[1][0],
         dir = createElement('UL'),
-        content = [];
+        context = arguments[2],
+        content = [],
+        name;
+
+    for(name in obj) {
+        content.push('');
+    }
 
 
 
 }
-
-var console = {
-    dir: function() {},
-    //Log the number of times this line has been called with the given label.
-    count: function() {},
-    group: function() {},
-    groupEnd: function() {},
-    time: function() {},
-    timeEnd: function() {},
-    clear: function() {}
-};
 
 function createMethod(name){
 
